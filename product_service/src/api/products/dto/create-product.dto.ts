@@ -15,6 +15,10 @@ export class CreateProductDto {
   @IsNotEmpty({ message: 'Description is required' })
   readonly description: string
 
+  @IsString({ message: 'Category Id must be a string' })
+  @IsNotEmpty({ message: 'Category Id is required' })
+  readonly categoryId: string
+
   @IsNumber({}, { message: 'Price must be a number' })
   @IsPositive({ message: 'Price must be a positive number' })
   @Min(0, { message: 'Price cannot be less than 0' })

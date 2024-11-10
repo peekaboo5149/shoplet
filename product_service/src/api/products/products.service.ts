@@ -12,6 +12,14 @@ export class ProductsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(createProductDto: CreateProductDto) {
+    const category = await this.databaseService.category.findFirst({
+      where: {
+        id: createProductDto.categoryId,
+      },
+    })
+
+    if (!category) throw new NotFoundException('Category does not exist')
+
     return await this.databaseService.product.create({
       data: { ...createProductDto },
     })
@@ -31,11 +39,43 @@ export class ProductsService {
       orderBy: {
         [sortBy]: sortOrder,
       },
+      select: {
+        id: true, // Include the id field
+        title: true, // Include the title field
+        description: true, // Include the description field
+        price: true, // Include the price field
+        created_at: true, // Include created_at
+        updated_at: true, // Include updated_at
+        category: {
+          // Include category (id and label)
+          select: {
+            id: true, // Only include id from category
+            label: true, // Only include label from category
+          },
+        },
+      },
     })
   }
 
   async findOne(id: string) {
-    return await this.databaseService.product.findFirst({ where: { id } })
+    return await this.databaseService.product.findFirst({
+      where: { id },
+      select: {
+        id: true, // Include the id field
+        title: true, // Include the title field
+        description: true, // Include the description field
+        price: true, // Include the price field
+        created_at: true, // Include created_at
+        updated_at: true, // Include updated_at
+        category: {
+          // Include category (id and label)
+          select: {
+            id: true, // Only include id from category
+            label: true, // Only include label from category
+          },
+        },
+      },
+    })
   }
 
   async findByFilterBy(
@@ -86,6 +126,21 @@ export class ProductsService {
         [sortBy]: sortOrder,
       },
       where: whereClause,
+      select: {
+        id: true, // Include the id field
+        title: true, // Include the title field
+        description: true, // Include the description field
+        price: true, // Include the price field
+        created_at: true, // Include created_at
+        updated_at: true, // Include updated_at
+        category: {
+          // Include category (id and label)
+          select: {
+            id: true, // Only include id from category
+            label: true, // Only include label from category
+          },
+        },
+      },
     })
   }
 
